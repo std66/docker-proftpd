@@ -1,0 +1,34 @@
+name: Build and Push Docker image
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Repo klónozása
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Docker login
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: std66
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+
+      # Build image
+      - name: Build Docker image
+        run: |
+          docker build -t std66/docker-proftpd:latest .
+
+      # Push image
+      - name: Push Docker image
+        run: |
+          docker push std66/docker-proftpd:latest
+          docker push std66/docker-proftpd:${{ steps.vars.outputs.TAG_VERSION }}
