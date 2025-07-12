@@ -31,4 +31,3 @@ jobs:
       - name: Push Docker image
         run: |
           docker push std66/docker-proftpd:latest
-          docker push std66/docker-proftpd:${{ steps.vars.outputs.TAG_VERSION }}
