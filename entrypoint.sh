@@ -34,14 +34,23 @@ for username in $usernames; do
 
     echo "Creating user: $username"
 
-    # Create home dir
+    # Create home dir first
     mkdir -p "$homedir"
-    useradd -d "$homedir" -s /bin/false "$username" || true
+
+    # Create user if not exists
+    if id "$username" &>/dev/null; then
+        echo "User $username already exists, skipping creation"
+    else
+        echo "Creating user: $username"
+        useradd -M -d "$homedir" -s /bin/false "$username"
+    fi
 
     # Set password
+	echo "Setting password for $username..."
     echo "$username:$password" | chpasswd
 
     # Permissions
+	echo "Setting permissions for $username..."
     chown -R "$username":"$username" "$homedir"
 
     if [ "$allow_upload" = "true" ]; then
